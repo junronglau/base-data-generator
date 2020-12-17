@@ -1,0 +1,14 @@
+{
+  "reviews" : {
+    "raw_data_path" : "data/raw/consolidated_products.csv",
+    "save_data_path": "data/base/consolidated_products.csv"
+  },
+  "profiles": {
+    "raw_data_path" : "data/raw/consolidated_profiles.csv",
+    "save_data_path": "data/base/consolidated_profiles.csv"
+  },
+  "preprocessing": {
+    "contractions_path": "data/preprocessing/contractions.txt",
+    "slangs_path": "data/preprocessing/slangs.txt"
+  }
+}
