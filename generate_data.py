@@ -3,9 +3,9 @@ This script loads the required files, preprocesses it, and saves in a directory.
 """
 from utils.config import process_config
 from utils.utils import get_args
+from pipeline.generator import Generator
 
-
-def clean():
+def generate():
     # capture the config path from the run arguments
     # then process the json configuration file
     try:
@@ -15,23 +15,22 @@ def clean():
         print("missing or invalid arguments")
         exit(0)
 
-    print('Creating the data generators.')
-    reviews_data_loader = ReviewsDataLoader(config)
-    profiles_data_loader = ProfilesDataLoader(config)
+    print('Creating the data generator...')
+    data_generator = Generator(config)
 
-    print('Creating the Preprocessor.')
-    preprocessor = Preprocessor(reviews_data_loader.df, profiles_data_loader.df)
+    print('Loading the Data and Preprocessor...')
+
+    data_generator.load_data()
+    data_generator.load_preprocessor()
 
     print('Preprocessing data..')
-    preprocessor.preprocess_all()
+    data_generator.preprocess_data()
 
-    reviews_data_loader.save()
-    profiles_data_loader.save()
+    print('Saving the generated dataframes...')
+    data_generator.save()
 
-    generate_basic_stats()
-
-def __init__():
-    pass
+if __name__ == '__main__':
+    generate()
 
 
 
