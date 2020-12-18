@@ -19,8 +19,8 @@ class Generator:
         self.preprocessor = Preprocessor(self.config, self.reviews_data, self.profiles_data)
 
     def preprocess_data(self):
-        self.reviews_data = self.preprocessor.preprocess_profiles()
-        self.profiles_data = self.preprocessor.preprocess_reviews()
+        self.reviews_data = self.preprocessor.preprocess_reviews()
+        self.profiles_data = self.preprocessor.preprocess_profiles()
 
     def get_reviews_data(self):
         self.reviews_data_loader.load_data()
