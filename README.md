@@ -112,10 +112,37 @@ https://github.com/aboSamoor/polyglot/issues/127#issuecomment-492604421
 
 # Usage
 
+Activate the conda environment
+```
+conda activate dvc
+```
 
-# Todo
+To view the list of available arguments
+```
+python generate_data.py -h
+```
+
+Specify your data paths in `configs/config.json` and generate all datasets (reviews, profiles)
+```
+python generate_data.py -d all
+```
+
+After dataset has been generated, we can register the changes with DVC
+```
+dvc add data/raw data/base
+git add data/raw.dvc data/base.dvc
+git commit -m "Generated base dataset"
+dvc push
+git push origin master
+```
+
+To access this version of dataset outside of this project (requires access to remote server `instance-janellah`)
+```
+dvc get https://github.com/junronglau/base-data-generator data
+```
+
+
+# TODO
 - Add script to pull latest set of data from ryan's database
-- add delin's amazon checklist
-- clean up codes (pep8)
-- diffferent modes - choose dataset to run
-- tag a version to the commits
+- add Delin's amazon checklist cleaning functions
+- Tag a release + changelog after confirmation with hongliang
