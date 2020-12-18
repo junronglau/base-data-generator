@@ -1,11 +1,10 @@
+import ast
+import html
 from unicodedata import normalize
 
-import ast
+import icu
 import nltk
 import numpy as np
-
-import html
-import icu
 from polyglot.detect import Detector
 
 resources = ["wordnet", "stopwords", "punkt", \
