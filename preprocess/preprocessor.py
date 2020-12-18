@@ -1,6 +1,5 @@
-from utils.reformat import reformat_reviews_df
-from utils.reformat import reformat_profiles_df
 from utils.clean import clean_text
+from utils.reformat import reformat_profiles_df, reformat_reviews_df
 
 
 class Preprocessor:
