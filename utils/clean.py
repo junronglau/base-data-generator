@@ -52,16 +52,16 @@ def replaceFromFile(text, path):
 
 def nltk_tag_to_wordnet_tag(nltk_tag):
     """ function to convert nltk tag to wordnet tag """
+    output = None
     if nltk_tag.startswith('J'):
-        return wordnet.ADJ
+        output = wordnet.ADJ
     elif nltk_tag.startswith('V'):
-        return wordnet.VERB
+        output = wordnet.VERB
     elif nltk_tag.startswith('N'):
-        return wordnet.NOUN
+        output = wordnet.NOUN
     elif nltk_tag.startswith('R'):
-        return wordnet.ADV
-    else:
-        return None
+        output = wordnet.ADV
+    return output
 
 
 def replaceElongated(word):
