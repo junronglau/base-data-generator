@@ -11,9 +11,10 @@ def generate():
     try:
         args = get_args()
         config = process_config(args.config)
-    except:
-        print("missing or invalid arguments")
+    except ValueError:
+        print("Missing or invalid arguments")
         exit(0)
+    dataset = args.dataset
 
     print('Creating the data generator...')
     data_generator = Generator(config)
@@ -24,7 +25,10 @@ def generate():
     data_generator.load_preprocessor()
 
     print('Preprocessing data..')
-    data_generator.preprocess_data()
+    if dataset in ['all', 'reviews']:
+        data_generator.preprocess_reviews()
+    if dataset in ['all', 'profiles']:
+        data_generator.preprocess_profiles()
 
     print('Saving the generated dataframes...')
     data_generator.save()
