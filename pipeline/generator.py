@@ -1,5 +1,5 @@
-from preprocess.preprocessor import Preprocessor
 from data_loader.data_loader import DataLoader
+from preprocess.preprocessor import Preprocessor
 
 
 class Generator:
@@ -18,9 +18,11 @@ class Generator:
     def load_preprocessor(self):
         self.preprocessor = Preprocessor(self.config, self.reviews_data, self.profiles_data)
 
-    def preprocess_data(self):
+    def preprocess_reviews(self):
         self.reviews_data = self.preprocessor.preprocess_reviews()
-        self.profiles_data = self.preprocessor.preprocess_profiles()
+
+    def preprocess_profiles(self):
+        self.reviews_data = self.preprocessor.preprocess_reviews()
 
     def get_reviews_data(self):
         self.reviews_data_loader.load_data()
