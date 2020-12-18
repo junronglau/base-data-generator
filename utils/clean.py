@@ -43,18 +43,11 @@ def remove_apostrophes(text):
     return [re.sub(r"'s", "",word) for word in text]
 
 
-def replaceSlang(text, path):
-    """ Creates a dictionary with slangs and their equivalents and replaces them """
-    with open(path,encoding="ISO-8859-1") as file:
+def replaceFromFile(text, path):
+    """ Creates a dictionary with slangs or contractions and their equivalents and replaces them """
+    with open(path, encoding="ISO-8859-1") as file:
         slang_map = dict(map(str.strip, line.partition('\t')[::2]) for line in file if line.strip())
     return [slang_map[word] if word in slang_map.keys() else word for word in text]
-
-
-def replaceContraction(text, path):
-    """ Creates a dictionary with contractions and their equivalents and replaces them """
-    with open(path,encoding="ISO-8859-1") as file:
-        contraction_map = dict(map(str.strip, line.partition('\t')[::2]) for line in file if line.strip())
-    return [contraction_map[word] if word in contraction_map.keys() else word for word in text]
 
 
 def nltk_tag_to_wordnet_tag(nltk_tag):
