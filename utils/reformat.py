@@ -68,7 +68,7 @@ def reformat_reviews_df(df):
 
     # Extracting location & date posted into two different columns
     df['location'], df['date_posted'] = zip(*df.date.str.split('on'))
-    df['location'] = df['location'].str.replace("Reviewed in the ", "")
+    df['location'] = df['location'].str.replace("Reviewed in the ", "").str.replace("Reviewed in ", "")
 
     # Identifying opinion's language
     df['poly_obj'] = df.decoded_comment.apply(lambda x: Detector(x, quiet=True))
