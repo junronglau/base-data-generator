@@ -1,32 +1,100 @@
-# Overview
+# Base Dataset Generator 
+[![Python 3.6](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/) [![dvc](https://camo.githubusercontent.com/6447c3e192a6a3cb9f9fd54c6af3cfc498494dc95753a9a587a520299483d935/68747470733a2f2f736e617063726166742e696f2f2f6476632f62616467652e737667)](https://snapcraft.io/dvc) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 This repo is to help us track the changes and preprocessing methods.
 We refer this dataset as the base dataset because it performs common, basic preprocessing methods which can then be further
-processed in our independent use cases. Currently, our files are stored in Google Drive. In the future, if we need to shift to a cloud bucket, it will make the
-process easy.
+processed in our independent use cases. This repo will also enforce data version control using [DVC](https://github.com/iterative/dvc), 
+and allows easy retrieval of the base dataset as long as you have access to the remote server `instance-janellah`.
 
-This allows standardization and reproducibility across our use cases.
+This allows dataset standardization, and a single source of truth across our use cases. We can also easily reproduce 
+this pipeline with other datasets in the future.
 
-# Pre-requisites
-TODO: give format of input data
 
 # File directory
 
 ```
 .
-├── data/                         # Stores data for training/testing
-│   ├── train/   
-│   │   ├── labels.csv
-│   │   └── generated_labels.txt
-│   ├── test/
-│   │   ├── labels.csv
-│   │   └── generated_labels.txt
-│   ├── label_map.txt
-│   └── label_map_tfite.txt
+├── data/                               # Stores data for preprocessing
+│   ├── base/   
+│   │   ├── consolidated_profiles.csv
+│   │   └── consolidated_products.txt
+│   │
+│   ├── raw/
+│   │   ├── consolidated_profiles.csv
+│   │   └── consolidated_products.txt
+│   │
+│   └── preprocessing/
+│       ├── contractions.txt
+│       └── slangs.txt
 │
-├── data_loader/                  # Generate required data format from csv 
-│   ├── create_tfrecord.py
-│   └── generate_labels.py
+├── configs/                            # Stores configuration files for pipeline 
+│   └── config.json
+│
+├── installation/                       # Required installation files 
+│   ├── environment.yml  
+│   └── install.sh
+│
+├── data_loader/                        # DataLoader class to load data from files
+│   └── data_loader.py
+│
+├── preprocess/                         # Preprocessor class for preprocessing and cleaning steps
+│   └── preprocessor.py
+│
+├── pipeline/                           # Generator class to load all methods and classes required 
+│   └── generator.py
+│
+├── utils/                              # Cleaning and processing functions
+│
+├── notebooks/     
+│
+└── generate_data.py                    # Controls the flow of the process
 ```
+
+# Datasets
+
+## Input
+The input data will be generated from the data extraction repo [here](https://github.com/fatberryz/FYP_UC1), which retrieves both reviews and profiles dataset from amazon. 
+The format is listed below, and should be placed in the `./data/raw` folder
+
+### Reviews
+
+| stars              | profile_name | profile_link                                           | profile_image                                                                                | title          | date                                               | style           | verified          | comment                                                  | voting                        | review_images | ASIN       |
+|--------------------|--------------|--------------------------------------------------------|----------------------------------------------------------------------------------------------|----------------|----------------------------------------------------|-----------------|-------------------|----------------------------------------------------------|-------------------------------|---------------|------------|
+| 5.0 out of 5 stars | Willow       | /gp/profile/amzn1.account.AHR5T6MM2O3EPWKQS2TBOVXBXLQA | https://images-na.ssl-images-amazon.com/images/S/amazon-avatars-global/e783dd3d-..-SX48_.jpg | Love love love | Reviewed in the United States on December 11, 2019 | Size: 1.7 Ounce | Verified Purchase | Love, love, love this moisturizer! As a woman who has... | One person found this helpful | 0             | B01M09QQI0 |
+
+### Profiles
+
+| json_data                                                               | acc_num                  | name    | occupation | location | description                | badges | ranking |
+|-------------------------------------------------------------------------|--------------------------|---------|------------|----------|----------------------------|--------|---------|
+| {'marketplaceId': xxx, 'locale': xxx, 'contributions': [{'id': ....}] } | AE25VHDU4KBY2EIVKGZCEG2A | JD Hart | Retired    | USA      | fitness instructor, writer | null   | 887548  |
+
+
+## Output
+
+### Reviews
+On top of existing columns, 13 new ones are added:
+
+- new_profile_link
+- clean_title
+- decoded_comment
+- ratings
+- clean_verified
+- account_number
+- clean_voting
+- location
+- date_posted
+- poly_obj
+- language
+- language_confidence
+- cleaned_text
+
+### Profiles
+On top of existing columns, 4 new ones are added:
+- deleted_status
+- reviewer_contributions
+- marketplace_id
+- locale
+
 
 # Installation
 
@@ -37,21 +105,17 @@ installation/install.sh
 ```
 
 ### Troubleshooting
-If you are on windows, you may experience difficulties installing polygot. Follow listed steps to install instead
+If you are on windows, you may experience difficulties installing polygot. Follow these steps to install instead
 ```
-https://github.com/aboSamoor/polyglot/issues/127
+https://github.com/aboSamoor/polyglot/issues/127#issuecomment-492604421
 ```
 
 # Usage
 
 
-
-# ToDo
+# Todo
 - Add script to pull latest set of data from ryan's database
-- add delin's amazon chcklist
+- add delin's amazon checklist
 - clean up codes (pep8)
 - diffferent modes - choose dataset to run
-
--changes: unparsed contributions in the json_data and no more amazon checklist since delin will have a seperate scraping for that,
-also, different parsing method for the json_data
-- also, we dont merge the 2 files tgt. When doing your own analysis, then you can join the tables if not it is unnecessary because we have 89k reviews, but 65k users. So means there should be users who reviewed more than 1 loreal product
+- tag a version to the commits
