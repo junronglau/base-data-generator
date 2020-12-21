@@ -1,5 +1,8 @@
 # Base Dataset Generator 
-[![Maintainability](https://api.codeclimate.com/v1/badges/8df17fa0a4b46ef798de/maintainability)](https://codeclimate.com/github/junronglau/base-data-generator/maintainability) [![Python 3.6](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/) [![dvc](https://camo.githubusercontent.com/6447c3e192a6a3cb9f9fd54c6af3cfc498494dc95753a9a587a520299483d935/68747470733a2f2f736e617063726166742e696f2f2f6476632f62616467652e737667)](https://snapcraft.io/dvc) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/junronglau/base-data-generator.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/junronglau/base-data-generator/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/junronglau/base-data-generator.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/junronglau/base-data-generator/context:python)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8df17fa0a4b46ef798de/maintainability)](https://codeclimate.com/github/junronglau/base-data-generator/maintainability) 
+[![Python 3.6](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/) [![dvc](https://camo.githubusercontent.com/6447c3e192a6a3cb9f9fd54c6af3cfc498494dc95753a9a587a520299483d935/68747470733a2f2f736e617063726166742e696f2f2f6476632f62616467652e737667)](https://snapcraft.io/dvc) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 This repo is to help us track the changes and preprocessing methods.
 We refer this dataset as the base dataset because it performs common, basic preprocessing methods which can then be further
