@@ -27,7 +27,7 @@ class Generator:
     def preprocess_profiles(self):
         self.profiles_data = self.preprocessor.preprocess_profiles()
     
-    def preprocess_profiles(self):
+    def preprocess_products(self):
         self.products_data = self.preprocessor.preprocess_products()
 
     def get_reviews_data(self):
