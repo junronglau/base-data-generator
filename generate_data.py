@@ -25,26 +25,42 @@ def generate():
     data_generator.load_preprocessor()
 
     print('Preprocessing data..')
-    if dataset in ['all', 'reviews']:
-        print('Preprocessing reviews dataset...')
-        data_generator.preprocess_reviews()
-
-        print('Saving the generated reviews dataset...')
-        data_generator.save_reviews_data()
-    if dataset in ['all', 'profiles']:
-        print('Preprocessing profiles dataset...')
-        data_generator.preprocess_profiles()
-
-        print('Saving the generated profiles dataset...')
-        data_generator.save_profiles_data()
-    if dataset in ['all', 'products']:
-        print('Preprocessing products dataset...')
-        data_generator.preprocess_products()
-
-        print('Saving the generated products dataset...')
-        data_generator.save_products_data()
+    if dataset == 'all':
+        preprocess_all(data_generator)
+    elif dataset == 'reviews':
+        preprocess_reviews_only(data_generator)
+    elif dataset == 'profiles':
+        preprocess_profiles_only(data_generator)
+    elif dataset == 'products':
+        preprocess_products_only(data_generator)
 
     print('Generated datasets are saved...')
+
+def preprocess_reviews_only(data_generator):
+    print('Preprocessing reviews dataset...')
+    data_generator.preprocess_reviews()
+
+    print('Saving the generated reviews dataset...')
+    data_generator.save_reviews_data()
+
+def preprocess_profiles_only(data_generator):
+    print('Preprocessing profiles dataset...')
+    data_generator.preprocess_profiles()
+
+    print('Saving the generated profiles dataset...')
+    data_generator.save_profiles_data()
+
+def preprocess_products_only(data_generator):
+    print('Preprocessing products dataset...')
+    data_generator.preprocess_products()
+
+    print('Saving the generated products dataset...')
+    data_generator.save_products_data()
+
+def preprocess_all(data_generator):
+    preprocess_products_only(data_generator)
+    preprocess_products_only(data_generator)
+    preprocess_profiles_only(data_generator)
 
 if __name__ == '__main__':
     generate()
