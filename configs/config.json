@@ -3,6 +3,10 @@
     "raw_data_path" : "data/raw/consolidated_products.csv",
     "save_data_path": "data/base/consolidated_products.csv"
   },
+  "products": {
+    "raw_data_path" : "data/raw/consolidated_product_info.csv",
+    "save_data_path": "data/base/consolidated_product_info.csv"
+  },
   "profiles": {
     "raw_data_path" : "data/raw/consolidated_profiles.csv",
     "save_data_path": "data/base/consolidated_profiles.csv"

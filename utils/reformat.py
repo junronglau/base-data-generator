@@ -7,6 +7,8 @@ import nltk
 import numpy as np
 from polyglot.detect import Detector
 
+import re
+
 resources = ["wordnet", "stopwords", "punkt", \
              "averaged_perceptron_tagger", "maxent_treebank_pos_tagger", "wordnet"]
 
@@ -81,6 +83,28 @@ def reformat_reviews_df(df):
     # return dataframe
     return df
 
+def reformat_products_df(df):
+    # Decode & lowercase comment text
+    df['decoded_comment'] = df.description.fillna(value='')
+    df['decoded_comment'] = df.decoded_comment.apply(lambda x: html.unescape(x))
+    df['decoded_comment'] = df.decoded_comment.apply(lambda text: ''.join(x for x in text if x.isprintable()))
+    df["decoded_comment"] = df["decoded_comment"].apply(lambda text: normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8", "ignore"))
+    df['decoded_comment']= df['decoded_comment'].str.lower()
+
+    # Cleaning stars
+    df['clean_rating'] = df.rating.fillna(value='0 out of 5')
+    df['clean_rating'] = df.clean_rating.apply(lambda x: x.split())
+    df['clean_rating'] = df.clean_rating.apply(lambda x: float(x[0])/float(x[3]))
+    df.loc[df.clean_rating == 0, 'clean_rating'] = np.nan
+
+    # extract price
+    df['clean_price'] = df.price.fillna(value='$0.00')
+    df['clean_price'] = df.clean_price.apply(lambda x: re.findall( r'\$([0-9]+\.?[0-9]+)', x))
+    df['clean_price'] = df.clean_price.apply(lambda x: x[0])
+    df.loc[df.clean_price == 0, 'clean_price'] = np.nan
+    
+    # return dataframe
+    return df
 
 def reformat_profiles_df(df):
     df = df.drop_duplicates()
@@ -108,7 +132,8 @@ def reformat_profiles_df(df):
     # return dataframe
     return df
 
-
 def split_reviewer_data(json_data):
     decoded_data = ast.literal_eval(json_data)
     return decoded_data['contributions'], decoded_data['marketplaceId'], decoded_data['locale']
+
+

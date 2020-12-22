@@ -19,12 +19,14 @@ this pipeline with other datasets in the future.
 .
 ├── data/                               # Stores data for preprocessing
 │   ├── base/   
-│   │   ├── consolidated_profiles.csv
-│   │   └── consolidated_products.txt
+│   │   ├── consolidated_profiles.csv   # Profiles dataset
+│   │   └── consolidated_products.csv   # Reviews dataset
+│   │   ├── consolidated_product_info.csv   #Products dataset
 │   │
 │   ├── raw/
-│   │   ├── consolidated_profiles.csv
-│   │   └── consolidated_products.txt
+│   │   ├── consolidated_profiles.csv   # Profiles dataset
+│   │   └── consolidated_products.csv   # Reviews dataset
+│   │   ├── consolidated_product_info.csv   #Products dataset
 │   │
 │   └── preprocessing/
 │       ├── contractions.txt
@@ -56,7 +58,7 @@ this pipeline with other datasets in the future.
 # Datasets
 
 ## Input
-The input data will be generated from the data extraction repo [here](https://github.com/fatberryz/FYP_UC1), which retrieves both reviews and profiles dataset from amazon. 
+The input data will be generated from the data extraction repo [here](https://github.com/fatberryz/FYP_UC1), which retrieves reviews, profiles and products dataset from amazon. 
 The format is listed below, and should be placed in the `./data/raw` folder
 
 ### Reviews
@@ -71,32 +73,50 @@ The format is listed below, and should be placed in the `./data/raw` folder
 |-------------------------------------------------------------------------|--------------------------|---------|------------|----------|----------------------------|--------|---------|
 | {'marketplaceId': xxx, 'locale': xxx, 'contributions': [{'id': ....}] } | AE25VHDU4KBY2EIVKGZCEG2A | JD Hart | Retired    | USA      | fitness instructor, writer | null   | 887548  |
 
+### Products
+
+| asin                                                               | description                  | price    | rating | availability |
+|----------|---------------------------------------------------------------------------------------|---------|------------|-----------------|
+| B07Z9WFWZ8 | RADIANT SERUM FOUNDATION: This carefully formulated foundation for mature skin ... | $11.97 | 4.3 out of 5    | Only 1 left in stock - order soon.      |
+
 
 ## Output
 
 ### Reviews
 On top of existing columns, 13 new ones are added:
-
-- new_profile_link
-- clean_title
-- decoded_comment
-- ratings
-- clean_verified
-- account_number
-- clean_voting
-- location
-- date_posted
-- poly_obj
-- language
-- language_confidence
-- cleaned_text
+| Column  | Description |
+| ------------- | ------------- |
+| new_profile_link  | The Url link to the reviewer's information which can be used to scrape for our Profiles Dataset.  |
+| clean_title  | Title has been cleaned after our data preprocessing steps.  |
+| decoded_comment  | Reviews are in ASCII encoding after scraping. Reviews are normalized to UTF-8 which means that accents in characters are removed, ensuring that words like "naïve" will simply be interpreted as (and therefore not differentiated from) "naive".  |
+| ratings  | Ratings are in a format of x.0 out of 5.0 stars where x are digits between 1 and 5. This column has been transformed and are between the range of 0 and 1. For example, if a review provides a rating of 4.0 out of 5.0 stars, it will simply be 0.8 (4 divided by 5).  |
+| clean_verified  | For reviews which are verified, 1 will be assigned. Else, 0.  |
+| account_number  | The account number who posted the review.  |
+| clean_voting  | Number of helpful votes which the review has received.  |
+| location  | Location in which the reviewer has posted the review from.  |
+| date_posted | Date when the reviewer has posted the reviewer.  |
+| poly_obj  | Language Object detected by Polyglot  |
+| language  | Language detected by Polyglot  |
+| language_confidence  | Confidence Score of the language detected by Polyglot.  |
+| cleaned_text  | Reviews has been cleaned after our data preprocessing steps using decoded_comment column.  |
 
 ### Profiles
 On top of existing columns, 4 new ones are added:
-- deleted_status
-- reviewer_contributions
-- marketplace_id
-- locale
+| Column  | Description |
+| ------------- | ------------- |
+| deleted_status  | If value is 1, the account has been deleted. Else, the account is still existing.  |
+| reviewer_contributions  | A list of review history by the reviewer.  |
+| marketplace_id | The marketplace id of the platform (amazon.com/amazon.uk/amazon.jp) where the reviewer make its account.  |
+| locale  | The location of the platform (amazon.com/amazon.uk/amazon.jp) where the reviewer make its account.  |
+
+### Products
+On top of existing columns, 4 new ones are added:
+| Column  | Description |
+| ------------- | ------------- |
+| decoded_comment  | Description might be in ASCII encoding after scraping. Description are normalized to UTF-8 which means that accents in characters are removed, ensuring that words like "naïve" will simply be interpreted as (and therefore not differentiated from) "naive".  |
+| clean_rating  | Ratings are in a format of x.0 out of 5.0 stars where x are digits between 1 and 5. This column has been transformed and are between the range of 0 and 1. For example, if a review provides a rating of 4.0 out of 5.0 stars, it will simply be 0.8 (4 divided by 5).  |
+| clean_price | Minimum price of the product  |
+| cleaned_text  | Description has been cleaned after our data preprocessing steps using decoded_comment column.  |
 
 
 # Installation
@@ -125,7 +145,7 @@ To view the list of available arguments
 python generate_data.py -h
 ```
 
-Specify your data paths in `configs/config.json` and generate all datasets (reviews, profiles)
+Specify your data paths in `configs/config.json` and generate all datasets (reviews, profiles, products)
 ```
 python generate_data.py -d all
 ```
@@ -147,5 +167,4 @@ dvc get https://github.com/junronglau/base-data-generator data
 
 # TODO
 - Add script to pull latest set of data from ryan's database
-- add Delin's amazon checklist cleaning functions
 - Tag a release + changelog after confirmation with hongliang
