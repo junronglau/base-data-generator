@@ -26,10 +26,13 @@ def generate():
 
     print('Preprocessing data..')
     if dataset in ['all', 'reviews']:
+        print('Preprocessing reviews dataset')
         data_generator.preprocess_reviews()
     if dataset in ['all', 'profiles']:
+        print('Preprocessing profiles dataset')
         data_generator.preprocess_profiles()
     if dataset in ['all', 'products']:
+        print('Preprocessing products dataset')
         data_generator.preprocess_products()
 
     print('Saving the generated dataframes...')
