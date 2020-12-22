@@ -19,10 +19,10 @@ class Preprocessor:
     def preprocess_profiles(self):
         self.profiles_df = reformat_profiles_df(self.profiles_df)
         return self.profiles_df
-	
+
     def preprocess_products(self):
         self.products_df = reformat_products_df(self.products_df)
         self.products_df['cleaned_text'] = clean_text(self.products_df['decoded_comment'],
-                                                     self.config.preprocessing.contractions_path,
-                                                     self.config.preprocessing.slangs_path)
+                                                      self.config.preprocessing.contractions_path,
+                                                      self.config.preprocessing.slangs_path)
         return self.products_df
