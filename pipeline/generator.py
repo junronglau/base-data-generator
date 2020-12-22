@@ -42,7 +42,11 @@ class Generator:
         self.products_data_loader.load_data()
         return self.products_data_loader.get_data()
 
-    def save(self):
+    def save_reviews_data(self):
         self.reviews_data.to_csv(self.config.reviews.save_data_path, index=False)
+    
+    def save_profiles_data(self):
         self.profiles_data.to_csv(self.config.profiles.save_data_path, index=False)
+    
+    def save_products_data(self):
         self.products_data.to_csv(self.config.products.save_data_path, index=False)
