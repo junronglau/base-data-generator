@@ -37,16 +37,13 @@ def reformat_reviews_df(df):
     df['decoded_comment'] = df.comment.astype(str)
     df['decoded_comment'] = df.decoded_comment.apply(lambda x: html.unescape(x))
     df['decoded_comment'] = df.decoded_comment.apply(lambda text: ''.join(x for x in text if x.isprintable()))
-    df["decoded_comment"] = df["decoded_comment"].apply(lambda text: normalize("NFKD", text)
-                                                        .encode("ascii", "ignore")
-                                                        .decode("utf-8", "ignore"))
+    df["decoded_comment"] = df["decoded_comment"].apply(decode_comments)
     df['decoded_comment'] = df['decoded_comment'].str.replace('\n', ' ').str.replace('\t', ' ')
     df['decoded_comment'] = df['decoded_comment'].str.lower().str.strip()
 
     # Cleaning stars
     df['ratings'] = df.stars.astype(str)
-    df['ratings'] = df.ratings.apply(lambda x: x.split())
-    df['ratings'] = df.ratings.apply(lambda x: float(x[0]) / float(x[3]))
+    df['ratings'] = df.ratings.apply(normalize_ratings)
 
     # Data wrangling & Fill in blanks for Verified Puchase
     df['clean_verified'] = df.verified.astype(str)
@@ -89,13 +86,12 @@ def reformat_products_df(df):
     df['decoded_comment'] = df.description.fillna(value='')
     df['decoded_comment'] = df.decoded_comment.apply(lambda x: html.unescape(x))
     df['decoded_comment'] = df.decoded_comment.apply(lambda text: ''.join(x for x in text if x.isprintable()))
-    df["decoded_comment"] = df["decoded_comment"].apply(lambda text: normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8", "ignore"))
+    df["decoded_comment"] = df["decoded_comment"].apply(decode_comments)
     df['decoded_comment']= df['decoded_comment'].str.lower()
 
     # Cleaning stars
     df['clean_rating'] = df.rating.fillna(value='0 out of 5')
-    df['clean_rating'] = df.clean_rating.apply(lambda x: x.split())
-    df['clean_rating'] = df.clean_rating.apply(lambda x: float(x[0])/float(x[3]))
+    df['clean_rating'] = df.clean_rating.apply(normalize_ratings)
     df.loc[df.clean_rating == 0, 'clean_rating'] = np.nan
 
     # extract price
@@ -140,3 +136,9 @@ def split_reviewer_data(json_data):
     return decoded_data['contributions'], decoded_data['marketplaceId'], decoded_data['locale']
 
 
+def normalize_ratings(ratings):
+    s_ratings = ratings.split()
+    return float(s_ratings[0])/float(s_ratings[3])
+
+def decode_comments(text):
+    return normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8", "ignore")
