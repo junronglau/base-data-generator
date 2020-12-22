@@ -86,15 +86,15 @@ The format is listed below, and should be placed in the `./data/raw` folder
 On top of existing columns, 13 new ones are added:
 | Column  | Description |
 | ------------- | ------------- |
-| new_profile_link  | The Url link to the reviewer's information which can be used to scrape for our Profiles Dataset.  |
-| clean_title  | Title has been cleaned after our data preprocessing steps.  |
+| cleaned_profile_link  | The Url link to the reviewer's information which can be used to scrape for our Profiles Dataset.  |
+| cleaned_title  | Title has been cleaned after our data preprocessing steps.  |
 | decoded_comment  | Reviews are in ASCII encoding after scraping. Reviews are normalized to UTF-8 which means that accents in characters are removed, ensuring that words like "naïve" will simply be interpreted as (and therefore not differentiated from) "naive".  |
-| ratings  | Ratings are in a format of x.0 out of 5.0 stars where x are digits between 1 and 5. This column has been transformed and are between the range of 0 and 1. For example, if a review provides a rating of 4.0 out of 5.0 stars, it will simply be 0.8 (4 divided by 5).  |
-| clean_verified  | For reviews which are verified, 1 will be assigned. Else, 0.  |
-| account_number  | The account number who posted the review.  |
-| clean_voting  | Number of helpful votes which the review has received.  |
-| location  | Location in which the reviewer has posted the review from.  |
-| date_posted | Date when the reviewer has posted the reviewer.  |
+| cleaned_ratings  | Ratings are in a format of x.0 out of 5.0 stars where x are digits between 1 and 5. This column has been transformed and are between the range of 0 and 1. For example, if a review provides a rating of 4.0 out of 5.0 stars, it will simply be 0.8 (4 divided by 5).  |
+| cleaned_verified  | For reviews which are verified, 1 will be assigned. Else, 0.  |
+| acc_num  | The account number who posted the review.  |
+| cleaned_voting  | Number of helpful votes which the review has received.  |
+| cleaned_location  | Location in which the reviewer has posted the review from.  |
+| cleaned_date_posted | Date when the reviewer has posted the reviewer.  |
 | poly_obj  | Language Object detected by Polyglot  |
 | language  | Language detected by Polyglot  |
 | language_confidence  | Confidence Score of the language detected by Polyglot.  |
@@ -104,18 +104,19 @@ On top of existing columns, 13 new ones are added:
 On top of existing columns, 4 new ones are added:
 | Column  | Description |
 | ------------- | ------------- |
-| deleted_status  | If value is 1, the account has been deleted. Else, the account is still existing.  |
+| cleaned_deleted_status  | If value is 1, the account has been deleted. Else, the account is still existing.  |
 | reviewer_contributions  | A list of review history by the reviewer.  |
 | marketplace_id | The marketplace id of the platform (amazon.com/amazon.uk/amazon.jp) where the reviewer make its account.  |
 | locale  | The location of the platform (amazon.com/amazon.uk/amazon.jp) where the reviewer make its account.  |
+| cleaned_ranking  | The ranking of the reviewer.  |
 
 ### Products
 On top of existing columns, 4 new ones are added:
 | Column  | Description |
 | ------------- | ------------- |
 | decoded_comment  | Description might be in ASCII encoding after scraping. Description are normalized to UTF-8 which means that accents in characters are removed, ensuring that words like "naïve" will simply be interpreted as (and therefore not differentiated from) "naive".  |
-| clean_rating  | Ratings are in a format of x.0 out of 5.0 stars where x are digits between 1 and 5. This column has been transformed and are between the range of 0 and 1. For example, if a review provides a rating of 4.0 out of 5.0 stars, it will simply be 0.8 (4 divided by 5).  |
-| clean_price | Minimum price of the product  |
+| cleaned_rating  | Ratings are in a format of x.0 out of 5.0 stars where x are digits between 1 and 5. This column has been transformed and are between the range of 0 and 1. For example, if a review provides a rating of 4.0 out of 5.0 stars, it will simply be 0.8 (4 divided by 5).  |
+| cleaned_price | Minimum price of the product  |
 | cleaned_text  | Description has been cleaned after our data preprocessing steps using decoded_comment column.  |
 
 
