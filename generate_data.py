@@ -26,17 +26,25 @@ def generate():
 
     print('Preprocessing data..')
     if dataset in ['all', 'reviews']:
-        print('Preprocessing reviews dataset')
+        print('Preprocessing reviews dataset...')
         data_generator.preprocess_reviews()
+
+        print('Saving the generated reviews dataset...')
+        data_generator.save_reviews_data()
     if dataset in ['all', 'profiles']:
-        print('Preprocessing profiles dataset')
+        print('Preprocessing profiles dataset...')
         data_generator.preprocess_profiles()
+
+        print('Saving the generated profiles dataset...')
+        data_generator.save_profiles_data()
     if dataset in ['all', 'products']:
-        print('Preprocessing products dataset')
+        print('Preprocessing products dataset...')
         data_generator.preprocess_products()
 
-    print('Saving the generated dataframes...')
-    data_generator.save()
+        print('Saving the generated products dataset...')
+        data_generator.save_products_data()
+
+    print('Generated datasets are saved...')
 
 if __name__ == '__main__':
     generate()
