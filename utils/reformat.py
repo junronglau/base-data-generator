@@ -18,7 +18,6 @@ for resource in resources:
     except LookupError:
         nltk.download(resource)
 
-
 def reformat_reviews_df(df):
     # Drop rows which are actually headers
     df = df[df.ASIN != 'ASIN']
@@ -34,16 +33,11 @@ def reformat_reviews_df(df):
     df['clean_title'] = df['title'].str.lower()
 
     # Decode & lowercase comment text
-    df['decoded_comment'] = df.comment.astype(str)
-    df['decoded_comment'] = df.decoded_comment.apply(lambda x: html.unescape(x))
-    df['decoded_comment'] = df.decoded_comment.apply(lambda text: ''.join(x for x in text if x.isprintable()))
-    df["decoded_comment"] = df["decoded_comment"].apply(decode_comments)
-    df['decoded_comment'] = df['decoded_comment'].str.replace('\n', ' ').str.replace('\t', ' ')
-    df['decoded_comment'] = df['decoded_comment'].str.lower().str.strip()
+    df['decoded_comment'] = df.comment.astype(str).apply(decode_comments)
+    df['decoded_comment'] = df['decoded_comment'].str.replace('\n', ' ').str.replace('\t', ' ').str.lower().str.strip()
 
     # Cleaning stars
-    df['ratings'] = df.stars.astype(str)
-    df['ratings'] = df.ratings.apply(normalize_ratings)
+    df['ratings'] = df.stars.astype(str).apply(normalize_ratings)
 
     # Data wrangling & Fill in blanks for Verified Puchase
     df['clean_verified'] = df.verified.astype(str)
@@ -51,18 +45,14 @@ def reformat_reviews_df(df):
     df['clean_verified'] = df['clean_verified'].fillna(value=0)
 
     # Extract Account Number
-    df['account_number'] = df['profile_link'].astype(str)
-    df['account_number'] = df['account_number'].str.split('.').str[-1]
+    df['account_number'] = df['profile_link'].astype(str).str.split('.').str[-1]
 
     # Data wrangling for voting columns
-    df['clean_voting'] = df['voting']
-    df['clean_voting'] = df['clean_voting'].fillna(value=0)
-    df['clean_voting'] = df.clean_voting.astype(str)
-    df['clean_voting'] = df.clean_voting.apply(lambda x: x.split(' ')[0])
+    df['clean_voting'] = df['voting'].fillna(value=0)
+    df['clean_voting'] = df.clean_voting.astype(str).apply(lambda x: x.split(' ')[0])
     df.loc[df.clean_voting == 'One', 'clean_voting'] = 1
     df.loc[df.clean_voting == 'Helpful', 'clean_voting'] = 0
-    df['clean_voting'] = df.clean_voting.astype(str)
-    df['clean_voting'] = df.clean_voting.apply(lambda x: x.replace(',', '') if ',' in x else x)
+    df['clean_voting'] = df.clean_voting.astype(str).apply(lambda x: x.replace(',', '') if ',' in x else x)
     df['clean_voting'] = df.clean_voting.astype(int)
 
     # Extracting location & date posted into two different columns
@@ -80,12 +70,9 @@ def reformat_reviews_df(df):
     # return dataframe
     return df
 
-
 def reformat_products_df(df):
     # Decode & lowercase comment text
     df['decoded_comment'] = df.description.fillna(value='')
-    df['decoded_comment'] = df.decoded_comment.apply(lambda x: html.unescape(x))
-    df['decoded_comment'] = df.decoded_comment.apply(lambda text: ''.join(x for x in text if x.isprintable()))
     df["decoded_comment"] = df["decoded_comment"].apply(decode_comments)
     df['decoded_comment']= df['decoded_comment'].str.lower()
 
@@ -102,7 +89,6 @@ def reformat_products_df(df):
     
     # return dataframe
     return df
-
 
 def reformat_profiles_df(df):
     df = df.drop_duplicates()
@@ -130,15 +116,15 @@ def reformat_profiles_df(df):
     # return dataframe
     return df
 
-
 def split_reviewer_data(json_data):
     decoded_data = ast.literal_eval(json_data)
     return decoded_data['contributions'], decoded_data['marketplaceId'], decoded_data['locale']
-
 
 def normalize_ratings(ratings):
     s_ratings = ratings.split()
     return float(s_ratings[0])/float(s_ratings[3])
 
 def decode_comments(text):
-    return normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8", "ignore")
+    text = normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8", "ignore")
+    text = html.unescape(text)
+    return ''.join([x for x in text if x.isprintable()])
