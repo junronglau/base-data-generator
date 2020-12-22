@@ -30,7 +30,7 @@ def generate():
     if dataset in ['all', 'profiles']:
         data_generator.preprocess_profiles()
     if dataset in ['all', 'products']:
-        data_generator.preprocess_profiles()
+        data_generator.preprocess_products()
 
     print('Saving the generated dataframes...')
     data_generator.save()
