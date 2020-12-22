@@ -83,6 +83,7 @@ def reformat_reviews_df(df):
     # return dataframe
     return df
 
+
 def reformat_products_df(df):
     # Decode & lowercase comment text
     df['decoded_comment'] = df.description.fillna(value='')
@@ -105,6 +106,7 @@ def reformat_products_df(df):
     
     # return dataframe
     return df
+
 
 def reformat_profiles_df(df):
     df = df.drop_duplicates()
@@ -131,6 +133,7 @@ def reformat_profiles_df(df):
 
     # return dataframe
     return df
+
 
 def split_reviewer_data(json_data):
     decoded_data = ast.literal_eval(json_data)
