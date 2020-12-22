@@ -23,41 +23,41 @@ def reformat_reviews_df(df):
     df = df[df.ASIN != 'ASIN']
 
     # Reformat profile link for profile crawling
-    df['new_profile_link'] = "https://www.amazon.com" + df['profile_link'].astype(str)
+    df['cleaned_profile_link'] = "https://www.amazon.com" + df['profile_link'].astype(str)
 
     # Check if stars column is correctly named:
     if 'ï»¿stars' in df.columns.values.tolist() and 'stars' not in df.columns.values.tolist():
         df = df.rename(columns={'ï»¿stars': 'stars'})
 
     # Lowercase title text
-    df['clean_title'] = df['title'].str.lower()
+    df['cleaned_title'] = df['title'].str.lower()
 
     # Decode & lowercase comment text
     df['decoded_comment'] = df.comment.astype(str).apply(decode_comments)
     df['decoded_comment'] = df['decoded_comment'].str.replace('\n', ' ').str.replace('\t', ' ').str.lower().str.strip()
 
     # Cleaning stars
-    df['ratings'] = df.stars.astype(str).apply(normalize_ratings)
+    df['cleaned_ratings'] = df.stars.astype(str).apply(normalize_ratings)
 
     # Data wrangling & Fill in blanks for Verified Puchase
-    df['clean_verified'] = df.verified.astype(str)
-    df.loc[df.clean_verified == 'Verified Purchase', 'clean_verified'] = 1
-    df['clean_verified'] = df['clean_verified'].fillna(value=0)
+    df['cleaned_verified'] = df.verified.astype(str)
+    df.loc[df.cleaned_verified == 'Verified Purchase', 'cleaned_verified'] = 1
+    df['cleaned_verified'] = df['cleaned_verified'].fillna(value=0)
 
     # Extract Account Number
-    df['account_number'] = df['profile_link'].astype(str).str.split('.').str[-1]
+    df['acc_num'] = df['profile_link'].astype(str).str.split('.').str[-1]
 
     # Data wrangling for voting columns
-    df['clean_voting'] = df['voting'].fillna(value=0)
-    df['clean_voting'] = df.clean_voting.astype(str).apply(lambda x: x.split(' ')[0])
-    df.loc[df.clean_voting == 'One', 'clean_voting'] = 1
-    df.loc[df.clean_voting == 'Helpful', 'clean_voting'] = 0
-    df['clean_voting'] = df.clean_voting.astype(str).apply(lambda x: x.replace(',', '') if ',' in x else x)
-    df['clean_voting'] = df.clean_voting.astype(int)
+    df['cleaned_voting'] = df['voting'].fillna(value=0)
+    df['cleaned_voting'] = df.cleaned_voting.astype(str).apply(lambda x: x.split(' ')[0])
+    df.loc[df.cleaned_voting == 'One', 'cleaned_voting'] = 1
+    df.loc[df.cleaned_voting == 'Helpful', 'cleaned_voting'] = 0
+    df['cleaned_voting'] = df.cleaned_voting.astype(str).apply(lambda x: x.replace(',', '') if ',' in x else x)
+    df['cleaned_voting'] = df.cleaned_voting.astype(int)
 
     # Extracting location & date posted into two different columns
-    df['location'], df['date_posted'] = zip(*df.date.str.split('on'))
-    df['location'] = df['location'].str.replace("Reviewed in the ", "").str.replace("Reviewed in ", "")
+    df['cleaned_location'], df['cleaned_date_posted'] = zip(*df.date.str.split('on'))
+    df['cleaned_location'] = df['cleaned_location'].str.replace("Reviewed in the ", "").str.replace("Reviewed in ", "")
 
     # Identifying opinion's language
     df['poly_obj'] = df.decoded_comment.apply(lambda x: Detector(x, quiet=True))
@@ -77,15 +77,15 @@ def reformat_products_df(df):
     df['decoded_comment']= df['decoded_comment'].str.lower()
 
     # Cleaning stars
-    df['clean_rating'] = df.rating.fillna(value='0 out of 5')
-    df['clean_rating'] = df.clean_rating.apply(normalize_ratings)
-    df.loc[df.clean_rating == 0, 'clean_rating'] = np.nan
+    df['cleaned_rating'] = df.rating.fillna(value='0 out of 5')
+    df['cleaned_rating'] = df.cleaned_rating.apply(normalize_ratings)
+    df.loc[df.cleaned_rating == 0, 'cleaned_rating'] = np.nan
 
     # extract price
-    df['clean_price'] = df.price.fillna(value='$0.00')
-    df['clean_price'] = df.clean_price.apply(lambda x: re.findall( r'\$([0-9]+\.?[0-9]+)', x))
-    df['clean_price'] = df.clean_price.apply(lambda x: x[0])
-    df.loc[df.clean_price == 0, 'clean_price'] = np.nan
+    df['cleaned_price'] = df.price.fillna(value='$0.00')
+    df['cleaned_price'] = df.cleaned_price.apply(lambda x: re.findall( r'\$([0-9]+\.?[0-9]+)', x))
+    df['cleaned_price'] = df.cleaned_price.apply(lambda x: x[0])
+    df.loc[df.cleaned_price == 0, 'cleaned_price'] = np.nan
     
     # return dataframe
     return df
@@ -94,7 +94,7 @@ def reformat_profiles_df(df):
     df = df.drop_duplicates()
 
     # Mark deleted accounts
-    df['deleted_status'] = df['json_data'].isnull()
+    df['cleaned_deleted_status'] = df['json_data'].isnull()
 
     # Fill empty json strings with formatted json
     empty_json_format = {
@@ -109,9 +109,9 @@ def reformat_profiles_df(df):
     df['reviewer_contributions'], df['marketplace_id'], df['locale'] = zip(*df['json_data'].apply(split_reviewer_data))
 
     # convert ranking string to integer
-    df['ranking'] = df['ranking'].str.replace(',', '')
-    df['ranking'] = df['ranking'].fillna(value=0)
-    df['ranking'] = df['ranking'].astype(int)
+    df['cleaned_ranking'] = df['ranking'].str.replace(',', '')
+    df['cleaned_ranking'] = df['cleaned_ranking'].fillna(value=0)
+    df['cleaned_ranking'] = df['cleaned_ranking'].astype(int)
 
     # return dataframe
     return df
