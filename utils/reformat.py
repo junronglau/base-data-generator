@@ -9,6 +9,8 @@ from polyglot.detect import Detector
 
 import re
 
+from utils.clean import clean_text
+
 resources = ["wordnet", "stopwords", "punkt", \
              "averaged_perceptron_tagger", "maxent_treebank_pos_tagger", "wordnet"]
 
@@ -18,7 +20,8 @@ for resource in resources:
     except LookupError:
         nltk.download(resource)
 
-def reformat_reviews_df(df):
+
+def reformat_reviews_df(df, contractions_path, slangs_path):
     # Drop rows which are actually headers
     df = df[df.ASIN != 'ASIN']
 
@@ -35,6 +38,7 @@ def reformat_reviews_df(df):
     # Decode & lowercase comment text
     df['decoded_comment'] = df.comment.astype(str).apply(decode_comments)
     df['decoded_comment'] = df['decoded_comment'].str.replace('\n', ' ').str.replace('\t', ' ').str.lower().str.strip()
+    df['cleaned_text'] = clean_text(df['decoded_comment'], contractions_path, slangs_path)
 
     # Cleaning stars
     df['cleaned_ratings'] = df.stars.astype(str).apply(normalize_ratings)
@@ -70,11 +74,13 @@ def reformat_reviews_df(df):
     # return dataframe
     return df
 
-def reformat_products_df(df):
+
+def reformat_products_df(df, contractions_path, slangs_path):
     # Decode & lowercase comment text
     df['decoded_comment'] = df.description.fillna(value='')
     df["decoded_comment"] = df["decoded_comment"].apply(decode_comments)
-    df['decoded_comment']= df['decoded_comment'].str.lower()
+    df['decoded_comment'] = df['decoded_comment'].str.lower()
+    df['cleaned_text'] = clean_text(df['decoded_comment'], contractions_path, slangs_path)
 
     # Cleaning stars
     df['cleaned_rating'] = df.rating.fillna(value='0 out of 5')
@@ -83,12 +89,13 @@ def reformat_products_df(df):
 
     # extract price
     df['cleaned_price'] = df.price.fillna(value='$0.00')
-    df['cleaned_price'] = df.cleaned_price.apply(lambda x: re.findall( r'\$([0-9]+\.?[0-9]+)', x))
+    df['cleaned_price'] = df.cleaned_price.apply(lambda x: re.findall(r'\$([0-9]+\.?[0-9]+)', x))
     df['cleaned_price'] = df.cleaned_price.apply(lambda x: x[0])
     df.loc[df.cleaned_price == 0, 'cleaned_price'] = np.nan
-    
+
     # return dataframe
     return df
+
 
 def reformat_profiles_df(df):
     df = df.drop_duplicates()
@@ -116,13 +123,16 @@ def reformat_profiles_df(df):
     # return dataframe
     return df
 
+
 def split_reviewer_data(json_data):
     decoded_data = ast.literal_eval(json_data)
     return decoded_data['contributions'], decoded_data['marketplaceId'], decoded_data['locale']
 
+
 def normalize_ratings(ratings):
     s_ratings = ratings.split()
-    return float(s_ratings[0])/float(s_ratings[3])
+    return float(s_ratings[0]) / float(s_ratings[3])
+
 
 def decode_comments(text):
     text = normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8", "ignore")
