@@ -13,7 +13,7 @@ def get_args():
     argparser.add_argument(
         '-d', '--dataset',
         default='all',
-        help='Which dataset to generate [all, reviews, profiles]')
+        help='Which dataset to generate [all, reviews, profiles, products]')
 
     args = argparser.parse_args()
     return args
